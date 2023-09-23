@@ -8,7 +8,6 @@ def index(request):
 
     request_site = Request(f"https://pokeapi.co/api/v2/pokemon?limit={count}&offset=0", headers={"User-Agent": "Mozilla/5.0"})
     webpage = json.loads(urlopen(request_site).read())
-    print(webpage['count'])
     template = loader.get_template("pokemons/index.html")
     context = {
         "pokemons": webpage,
