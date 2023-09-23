@@ -5,14 +5,30 @@
     <title>Title</title>
 </head>
 <body>
+    <label for="input">Поиск</label>
+    <input id="input" type="text">
     {% if pokemons %}
         <ul>
             {% for pokemon in pokemons.results %}
-                <li>{{ pokemon }}</li>
+                <li class="name">{{ pokemon.name }}</li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>No polls are available.</p>
+        <p>No pokemons are available.</p>
     {% endif %}
+<script>
+    var input = document.getElementById('input');
+    input.onkeyup = function () {
+        var filter = input.value.toUpperCase();
+        var lis = document.getElementsByTagName('li');
+        for (var i = 0; i < lis.length; i++) {
+            var name = lis[i].innerHTML;
+            if (name.toUpperCase().indexOf(filter) == 0)
+                lis[i].style.display = 'list-item';
+            else
+                lis[i].style.display = 'none';
+        }
+    }
+</script>
 </body>
 </html>
