@@ -5,8 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-    <label for="input">Поиск</label>
-    <input id="input" type="text">
+    <form action="{% url 'search' %}" method="post">
+        {% csrf_token %}
+        <label for="search">Поиск</label>
+        <input id="search" name="search" type="text">
+        <button>Искать</button>
+    </form>
+
     {% if pokemons %}
         <ul>
             {% for pokemon in pokemons.results %}
@@ -16,19 +21,30 @@
     {% else %}
         <p>No pokemons are available.</p>
     {% endif %}
-<script>
-    const input = document.getElementById('input');
-    input.onkeyup = function () {
-        const filter = input.value.toUpperCase();
-        const lis = document.getElementsByTagName('li');
-        for (let i = 0; i < lis.length; i++) {
-            const name = lis[i].innerHTML;
-            if (name.toUpperCase().indexOf(filter) === 0)
-                lis[i].style.display = 'list-item';
-            else
-                lis[i].style.display = 'none';
-        }
-    }
-</script>
+
+    {% if pokemons.previous %}
+        <a href="http://127.0.0.1:8000/pokemons/page={{ num_prev }}">
+            <button>Назад</button>
+        </a>
+    {% endif %}
+    {% if pokemons.next %}
+        <a href="http://127.0.0.1:8000/pokemons/page={{ num_next }}">
+            <button>Вперед</button>
+        </a>
+    {% endif %}
+{#<script>#}
+    {#const input = document.getElementById('input');#}
+    {#input.onkeyup = function () {#}
+    {#    const filter = input.value.toUpperCase();#}
+    {#    const lis = document.getElementsByTagName('li');#}
+    {#    for (let i = 0; i < lis.length; i++) {#}
+    {#        const name = lis[i].innerHTML;#}
+    {#        if (name.toUpperCase().indexOf(filter) === 0)#}
+    {#            lis[i].style.display = 'list-item';#}
+    {#        else#}
+    {#            lis[i].style.display = 'none';#}
+    {#    }#}
+{#    {#}
+{#</script>#}
 </body>
 </html>

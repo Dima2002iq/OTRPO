@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="{% url 'search' %}" method="post">
+        {% csrf_token %}
+        <label for="search">Поиск</label>
+        <input id="search" name="search" type="text" value="{{ search_text }}">
+        <button>Искать</button>
+    </form>
+
+    {% if pokemons %}
+        <ul>
+            {% for pokemon in pokemons.results %}
+                <li class="name">{{ pokemon.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No pokemons are available.</p>
+    {% endif %}
+
+    <a href="http://127.0.0.1:8000/pokemons/page=0">
+        <button>На главную</button>
+    </a>
+    <script>
+        let input = document.getElementById('search');
+        const filter = input.value.toUpperCase();
+        const lis = document.getElementsByTagName('li');
+        for (let i = 0; i < lis.length; i++) {
+            const name = lis[i].innerHTML;
+            if (name.toUpperCase().indexOf(filter) === 0)
+                lis[i].style.display = 'list-item';
+            else
+                lis[i].style.display = 'none';
+        }
+    </script>
+</body>
+</html>
