@@ -15,7 +15,15 @@
     {% if pokemons %}
         <ul>
             {% for pokemon in pokemons.results %}
-                <li class="name">{{ pokemon.name }}</li>
+                <li class="name">
+                    <div>
+                        <a href="{% url 'pokemon' pokemon.name %}">{{ pokemon.name }}</a>
+                        <a href="{% url 'pokemon' pokemon.name %}"><img src="{{ pokemon.info.sprites.front_default }}"></a>
+                        <p>Рост: {{ pokemon.info.height }}</p>
+                        <p>Вес: {{ pokemon.info.weight }}</p>
+                        <button>Выбрать для боя!</button>
+                    </div>
+                </li>
             {% endfor %}
         </ul>
     {% else %}

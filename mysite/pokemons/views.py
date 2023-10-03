@@ -5,20 +5,14 @@ from urllib.request import Request, urlopen
 import json
 
 
-# def index(request):
-#     request_site = Request("https://pokeapi.co/api/v2/pokemon", headers={"User-Agent": "Mozilla/5.0"})
-#     webpage = json.loads(urlopen(request_site).read())
-#     template = loader.get_template("pokemons/index.html")
-#     context = {
-#         "pokemons": webpage,
-#         "next": webpage["next"][webpage["next"].find('?'):],
-#     }
-#     return HttpResponse(template.render(context, request))
-
 def page(request, num=0):
-    request_site = Request(f"https://pokeapi.co/api/v2/pokemon?offset={num * 20}&limit=20",
+    request_site = Request(f"https://pokeapi.co/api/v2/pokemon?offset={num * 5}&limit=5",
                            headers={"User-Agent": "Mozilla/5.0"})
     webpage = json.loads(urlopen(request_site).read())
+
+    for i in range(len(webpage['results'])):
+        webpage['results'][i]['info'] = get_pokemon_info(webpage['results'][i]['name'])
+
     template = loader.get_template("pokemons/index.html")
     context = {
         "pokemons": webpage,
@@ -26,6 +20,16 @@ def page(request, num=0):
         "num_prev": num - 1,
     }
     return HttpResponse(template.render(context, request))
+
+
+def pokemon(request, name):
+    info = get_pokemon_info(name)
+    context = {
+        "pokemon": get_pokemon_info(name),
+        "hp": info['stats'][0]['base_stat'],
+        "attack": info['stats'][1]['base_stat'],
+    }
+    return render(request, "pokemons/pokemon.html", context)
 
 
 def search(request):
@@ -42,3 +46,8 @@ def search(request):
 def get_pokemon_count():
     return json.loads(urlopen(Request("https://pokeapi.co/api/v2/pokemon", headers={"User-Agent": "Mozilla/5.0"}))
                       .read())['count']
+
+
+def get_pokemon_info(name):
+    return json.loads(urlopen(Request(f"https://pokeapi.co/api/v2/pokemon/{name}",
+                                      headers={"User-Agent": "Mozilla/5.0"})).read())
