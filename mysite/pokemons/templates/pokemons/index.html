@@ -21,7 +21,9 @@
                         <a href="{% url 'pokemon' pokemon.name %}"><img src="{{ pokemon.info.sprites.front_default }}"></a>
                         <p>Рост: {{ pokemon.info.height }}</p>
                         <p>Вес: {{ pokemon.info.weight }}</p>
-                        <button>Выбрать для боя!</button>
+                        <a href="{% url 'fight' pokemon.name %}">
+                            <button>Выбрать для боя!</button>
+                        </a>
                     </div>
                 </li>
             {% endfor %}

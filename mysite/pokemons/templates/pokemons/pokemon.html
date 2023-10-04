@@ -12,7 +12,9 @@
         <p>Вес: {{ pokemon.weight }}</p>
         <p>Здоровье: {{ hp }}</p>
         <p>Атака: {{ attack }}</p>
-        <button>Выбрать для боя!</button>
+        <a href="{% url 'fight' pokemon.name %}">
+            <button>Выбрать для боя!</button>
+        </a>
     </div>
 </body>
 </html>

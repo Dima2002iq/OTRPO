@@ -1,8 +1,14 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+import random
+
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.template import loader
 from urllib.request import Request, urlopen
 import json
+
+from django.urls import reverse
+
+from .models import Event
 
 
 def page(request, num=0):
@@ -30,6 +36,26 @@ def pokemon(request, name):
         "attack": info['stats'][1]['base_stat'],
     }
     return render(request, "pokemons/pokemon.html", context)
+
+
+def fight(request, name):
+    pokemon_pc = get_pokemon_info(random.randint(1, get_pokemon_count()))
+    pokemon_player = get_pokemon_info(name)
+    return render(request, "pokemons/fight.html", {
+        "pokemon_pc": pokemon_pc,
+        "hp_pc": pokemon_pc['stats'][0]['base_stat'],
+        "attack_pc": pokemon_pc['stats'][1]['base_stat'],
+        "pokemon_player": pokemon_player,
+        "hp_player": pokemon_player['stats'][0]['base_stat'],
+        "attack_player": pokemon_player['stats'][1]['base_stat'],
+    })
+
+
+def result(request, name):
+    event = Event()
+    event.description = request.POST["event"]
+    event.save()
+    return HttpResponse(f"Event saved: {event.description}")
 
 
 def search(request):

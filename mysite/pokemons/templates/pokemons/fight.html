@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div style="display: flex;">
+        <div>
+            <p>{{ pokemon_player.name }}</p>
+            <img src="{{ pokemon_player.sprites.front_default }}">
+            <p>Рост: {{ pokemon_player.height }}</p>
+            <p>Вес: {{ pokemon_player.weight }}</p>
+            <p id="hp_player">Здоровье: {{ hp_player }}</p>
+            <p>Атака: {{ attack_player }}</p>
+        </div>
+        <div style="margin-left: 1.25rem;">
+            <p>{{ pokemon_pc.name }}</p>
+            <img src="{{ pokemon_pc.sprites.front_default }}">
+            <p>Рост: {{ pokemon_pc.height }}</p>
+            <p>Вес: {{ pokemon_pc.weight }}</p>
+            <p id="hp_pc">Здоровье: {{ hp_pc }}</p>
+            <p>Атака: {{ attack_pc }}</p>
+        </div>
+    </div>
+    <label for="input">Ваш бросок</label>
+    <input type="number" id="input" name="input" max="10" min="1" placeholder="1">
+    <button onclick="fightRound()">Бросить</button>
+    <script>
+        function getCookie(name) {
+            let cookie = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+            return cookie ? cookie[2] : null;
+        }
+        let hp_player = {{ hp_player }};
+        let hp_pc = {{ hp_pc }};
+        function fightRound() {
+            let pc_throw = Math.floor(Math.random() * 10) + 1;
+            let player_throw = document.getElementById('input').value;
+            if (pc_throw % 2 === player_throw % 2){
+                hp_pc -= {{ attack_player }};
+                if (hp_pc <= 0) {
+                    alert('Вы победили!');
+                    const data = new FormData();
+                    data.append('event', 'player win!');
+                    fetch('/pokemons/{{ pokemon_player.name }}/fight/result', {
+                        method: 'post',
+                        headers: {
+                            "X-CSRFToken": getCookie("csrftoken"),
+                        },
+                        body: data
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            alert(data);
+                            window.location.href = '/pokemons';
+                        });
+                }
+                else {
+                    document.getElementById('hp_pc').innerHTML = 'Здоровье: ' + hp_pc;
+                }
+            }
+            else {
+                hp_player -= {{ attack_pc }};
+                if (hp_player <= 0) {
+                    alert('Вы проиграли!');
+                    const data = new FormData();
+                    data.append('event', 'player lose!');
+                    fetch('/pokemons/{{ pokemon_player.name }}/fight/result', {
+                        method: 'post',
+                        headers: {
+                            "X-CSRFToken": getCookie("csrftoken"),
+                        },
+                        body: data
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            alert(data);
+                            window.location.href = '/pokemons';
+                        });
+                }
+                else {
+                    document.getElementById('hp_player').innerHTML = 'Здоровье: ' + hp_player;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
