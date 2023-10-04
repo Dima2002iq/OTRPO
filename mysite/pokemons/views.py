@@ -1,20 +1,15 @@
 import random
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.shortcuts import render
 from django.template import loader
-from urllib.request import Request, urlopen
-import json
-
-from django.urls import reverse
+import requests
 
 from .models import Event
 
 
 def page(request, num=0):
-    request_site = Request(f"https://pokeapi.co/api/v2/pokemon?offset={num * 5}&limit=5",
-                           headers={"User-Agent": "Mozilla/5.0"})
-    webpage = json.loads(urlopen(request_site).read())
+    webpage = requests.get(f"https://pokeapi.co/api/v2/pokemon?offset={num * 5}&limit=5").json()
 
     for i in range(len(webpage['results'])):
         webpage['results'][i]['info'] = get_pokemon_info(webpage['results'][i]['name'])
@@ -39,7 +34,10 @@ def pokemon(request, name):
 
 
 def fight(request, name):
-    pokemon_pc = get_pokemon_info(random.randint(1, get_pokemon_count()))
+    pokemon_id = random.randint(1, get_pokemon_count())
+    if pokemon_id > 1017:
+        pokemon_id = 10000 + pokemon_id - 1017
+    pokemon_pc = get_pokemon_info(pokemon_id)
     pokemon_player = get_pokemon_info(name)
     return render(request, "pokemons/fight.html", {
         "pokemon_pc": pokemon_pc,
@@ -59,9 +57,7 @@ def result(request, name):
 
 
 def search(request):
-    request_site = Request(f"https://pokeapi.co/api/v2/pokemon?offset=0&limit={get_pokemon_count()}",
-                           headers={"User-Agent": "Mozilla/5.0"})
-    webpage = json.loads(urlopen(request_site).read())
+    webpage = requests.get(f"https://pokeapi.co/api/v2/pokemon?offset=0&limit={get_pokemon_count()}").json()
     context = {
         "pokemons": webpage,
         "search_text": request.POST.get("search"),
@@ -70,10 +66,8 @@ def search(request):
 
 
 def get_pokemon_count():
-    return json.loads(urlopen(Request("https://pokeapi.co/api/v2/pokemon", headers={"User-Agent": "Mozilla/5.0"}))
-                      .read())['count']
+    return requests.get("https://pokeapi.co/api/v2/pokemon").json()['count']
 
 
 def get_pokemon_info(name):
-    return json.loads(urlopen(Request(f"https://pokeapi.co/api/v2/pokemon/{name}",
-                                      headers={"User-Agent": "Mozilla/5.0"})).read())
+    return requests.get(f"https://pokeapi.co/api/v2/pokemon/{name}").json()
