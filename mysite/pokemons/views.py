@@ -3,6 +3,8 @@ import random
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
+from django.core.mail import EmailMessage
+
 import requests
 
 from .models import Event
@@ -50,10 +52,21 @@ def fight(request, name):
 
 
 def result(request, name):
-    event = Event()
-    event.description = request.POST["event"]
-    event.save()
-    return HttpResponse(f"Event saved: {event.description}")
+    if request.POST["send_type"] == 'db':
+        event = Event()
+        event.description = request.POST["event"]
+        event.save()
+        return HttpResponse(f"Event saved: {event.description}")
+    else:
+        mail_subject = 'New event happened!'
+        message = request.POST["event"]
+        to_email = request.POST["email"]
+
+        email = EmailMessage(
+            mail_subject, message, to=[to_email]
+        )
+        email.send()
+        return HttpResponse(f"Event sent via email.")
 
 
 def search(request):
