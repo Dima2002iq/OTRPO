@@ -9,4 +9,5 @@ urlpatterns = [
     path("<str:name>", views.pokemon, name="pokemon"),
     path("<str:name>/fight", views.fight, name="fight"),
     path("<str:name>/fight/result", views.result, name="result"),
+    path("<str:name>/save", views.save, name="save"),
 ]

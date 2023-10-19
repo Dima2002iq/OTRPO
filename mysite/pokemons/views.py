@@ -4,8 +4,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
 from django.core.mail import EmailMessage
+from django.utils import timezone
 
+from ftplib import FTP
 import requests
+import os
 
 from .models import Event
 
@@ -67,6 +70,36 @@ def result(request, name):
         )
         email.send()
         return HttpResponse(f"Event sent via email.")
+
+
+def save(request, name):
+    if request.method == 'POST':
+        pokemon = get_pokemon_info(name)
+        data = request.POST.dict()
+        markdown = f"# [{name}](https://pokeapi.co/api/v2/pokemon/{name})\n"
+        markdown += "## Info\n"
+        if "is_pokemon_height" in data.keys():
+            markdown += f" * height: {pokemon['height']}\n"
+        if "is_pokemon_weight" in data.keys():
+            markdown += f" * weight: {pokemon['weight']}\n"
+        if "is_pokemon_hp" in data.keys():
+            markdown += f" * hp: {pokemon['stats'][0]['base_stat']}\n"
+        if "is_pokemon_attack" in data.keys():
+            markdown += f" * attack: {pokemon['stats'][1]['base_stat']}\n"
+        try:
+            ftp = FTP(data["server"])
+            ftp.login(data["login"], data["password"])
+            if not f"{timezone.now().strftime('%Y%m%d')}" in ftp.nlst():
+                ftp.mkd(f"{timezone.now().strftime('%Y%m%d')}")
+            ftp.cwd(f"{timezone.now().strftime('%Y%m%d')}")
+            with open(f"{pokemon['name']}.md", "w") as file:
+                file.write(markdown)
+            ftp.storbinary(f"STOR {pokemon['name']}.md", open(f"{pokemon['name']}.md", "rb"))
+            ftp.quit()
+            os.remove(f"{pokemon['name']}.md")
+        except Exception as e:
+            return HttpResponse(f"Error: {e}")
+        return HttpResponse("File successfully saved!")
 
 
 def search(request):

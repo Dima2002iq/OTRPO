@@ -5,16 +5,47 @@
     <title>Title</title>
 </head>
 <body>
-    <div>
-        <a>{{ pokemon.name }}</a>
-        <img src="{{ pokemon.sprites.front_default }}">
-        <p>Рост: {{ pokemon.height }}</p>
-        <p>Вес: {{ pokemon.weight }}</p>
-        <p>Здоровье: {{ hp }}</p>
-        <p>Атака: {{ attack }}</p>
-        <a href="{% url 'fight' pokemon.name %}">
-            <button>Выбрать для боя!</button>
-        </a>
+    <div style="display: flex">
+        <div>
+            <a>{{ pokemon.name }}</a>
+            <img src="{{ pokemon.sprites.front_default }}">
+            <p>Рост: {{ pokemon.height }}</p>
+            <p>Вес: {{ pokemon.weight }}</p>
+            <p>Здоровье: {{ hp }}</p>
+            <p>Атака: {{ attack }}</p>
+            <a href="{% url 'fight' pokemon.name %}">
+                <button>Выбрать для боя!</button>
+            </a>
+        </div>
+        <div style="margin-left: 40px">
+            <h1>Сохранить покемона</h1>
+            <form method="post" action="{% url 'save' pokemon.name %}">
+                {% csrf_token %}
+                <div>
+                    <label for="server">Название сервера</label>
+                    <input type="text" id="server" name="server" placeholder="Введите название сервера...">
+                </div>
+                <div style="margin-top: 8px">
+                    <label for="login">Логин</label>
+                    <input type="text" id="login" name="login" placeholder="Введите логин пользователя...">
+                </div>
+                <div style="margin-top: 8px">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" placeholder="Введите пароль...">
+                </div>
+                <div style="margin-top: 8px">
+                    <input type="checkbox" name="is_pokemon_height" value="true" id="is_pokemon_height" checked>
+                    <label for="is_pokemon_height">Записать высоту покемона</label><br>
+                    <input type="checkbox" name="is_pokemon_weight" value="true" id="is_pokemon_weight" checked>
+                    <label for="is_pokemon_weight">Записать вес покемона</label><br>
+                    <input type="checkbox" name="is_pokemon_hp" value="true" id="is_pokemon_hp" checked>
+                    <label for="is_pokemon_hp">Записать здоровье покемона</label><br>
+                    <input type="checkbox" name="is_pokemon_attack" value="true" id="is_pokemon_attack" checked>
+                    <label for="is_pokemon_attack">Записать атаку покемона</label><br>
+                </div>
+                <button type="submit" style="margin-top: 8px">Сохранить</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
