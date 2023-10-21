@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.template import loader
 from django.core.mail import EmailMessage
 from django.utils import timezone
+from django.views.decorators.cache import cache_page
 
 from ftplib import FTP
 import requests
@@ -13,6 +14,7 @@ import os
 from .models import Event
 
 
+@cache_page(60 * 60)
 def page(request, num=0):
     webpage = requests.get(f"https://pokeapi.co/api/v2/pokemon?offset={num * 5}&limit=5").json()
 
@@ -28,6 +30,7 @@ def page(request, num=0):
     return HttpResponse(template.render(context, request))
 
 
+@cache_page(60 * 60)
 def pokemon(request, name):
     info = get_pokemon_info(name)
     context = {
