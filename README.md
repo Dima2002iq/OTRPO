@@ -4,8 +4,12 @@
 
 ## Запуск проекта
 
+### С получением веб-приложения с [Dockerhub](https://hub.docker.com/r/dmitryshusharin/otrpo)
 ```shell
-pip install -r requirements.txt
-cd mysite
-python manage.py runserver
+docker compose --env-file .env.docker up -d
+```
+
+### Со сборкой веб-приложения
+```shell
+docker compose --env-file .env.docker up -d --build
 ```
