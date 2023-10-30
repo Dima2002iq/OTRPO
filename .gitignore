@@ -1,4 +1,5 @@
 .idea
-contacts.txt
+./contacts.txt
 /venv
-.env
+.env*
+!.env.example
