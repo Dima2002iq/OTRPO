@@ -42,9 +42,13 @@ class SeleniumTest(TestCase):
 
     def test_page(self):
         self.driver.get('http://localhost:8000/pokemons/')
+        element = self.driver.find_element(By.TAG_NAME, 'p')
+        self.assertTrue(element.text)
 
     def test_pokemon(self):
         self.driver.get('http://localhost:8000/pokemons/pikachu')
+        element = self.driver.find_element(By.TAG_NAME, 'a')
+        self.assertEqual(element.text, 'pikachu')
 
     def test_search(self):
         self.driver.get('http://localhost:8000/pokemons/')
