@@ -12,28 +12,37 @@ class ViewsTest(TestCase):
     def test_page(self):
         response = self.client.get('/pokemons/')
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['pokemons'])
+
 
     def test_pokemon(self):
         response = self.client.get('/pokemons/pikachu')
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['pokemon']['name'], 'pikachu')
 
     def test_fight(self):
         response = self.client.get('/pokemons/pikachu/fight')
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['pokemon_player']['name'], 'pikachu')
+        self.assertTrue(response.context['pokemon_pc']['name'])
 
     def test_search(self):
         response = self.client.post('/pokemons/search', {'search': 'pikachu'})
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['pokemons'])
 
     def test_result(self):
         response = self.client.post('/pokemons/pikachu/fight/result', {'send_type': 'db', 'event': 'test event saved!'})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b'Event saved: test event saved!')
         response = self.client.post('/pokemons/pikachu/fight/result', {'send_type': 'mail', 'event': 'test event saved!', 'email': 'dimas.sektor001@mail.ru'})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b'Event sent via email.')
 
     def test_save(self):
         response = self.client.post('/pokemons/pikachu/save', {'server': 'localhost', 'login': 'admin', 'password': 'admin'})
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.content)
 
 
 class SeleniumTest(TestCase):
