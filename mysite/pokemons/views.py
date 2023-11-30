@@ -67,6 +67,7 @@ def result(request, name):
     if request.POST["send_type"] == 'db':
         event = Event()
         event.description = request.POST["event"]
+        event.user_id = request.user.id
         event.save()
         return HttpResponse(f"Event saved: {event.description}")
     else:
