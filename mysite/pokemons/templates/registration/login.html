@@ -30,9 +30,9 @@
             <td>{{ form.password }}</td>
         </tr>
     </table>
-{#    <p style="margin: 0.4em;">#}
-{#        <a href="{% url 'socialauth_begin' 'vkontakte-oauth2' %}">Enter VK</a>#}
-{#    </p>#}
+    <a href="{% url "social:begin" "vk-oauth2" %}">
+        <img src="/static/lvk.png" class="avatar-3" data-toggle="tooltip" title="Login via VKontakte">
+    </a>
 
     <input type="submit" value="Войти">
     <a href="{% url 'register' %}">
