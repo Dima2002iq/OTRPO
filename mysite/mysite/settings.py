@@ -51,8 +51,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pokemons'
+    'pokemons',
+    'social_auth',
 ]
+
+# AUTHENTICATION_BACKENDS = (
+#     'social_auth.backends.contrib.vkontakte.VKontakteOAuth2Backend',
+#     'django.contrib.auth.backends.ModelBackend',
+# )
+#
+# VK_APP_ID = os.environ.get("VK_APP_ID")
+# VK_API_SECRET = os.environ.get("VK_API_SECRET")
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,12 +75,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'mysite.urls'
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}",
-    }
-}
+LOGIN_REDIRECT_URL = '/pokemons/'
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": f"redis://{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}",
+#     }
+# }
 
 TEMPLATES = [
     {
@@ -108,7 +119,7 @@ DATABASES = {
         "NAME": os.environ.get("SQL_DATABASE"),
         "USER": os.environ.get("SQL_USER"),
         "PASSWORD": os.environ.get("SQL_PASSWORD"),
-        "HOST": os.environ.get("SQL_HOST"),
+        "HOST": "127.0.0.1",
         "PORT": os.environ.get("SQL_PORT"),
     },
 }
