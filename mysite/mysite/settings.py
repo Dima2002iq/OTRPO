@@ -80,12 +80,12 @@ ROOT_URLCONF = 'mysite.urls'
 
 LOGIN_REDIRECT_URL = '/pokemons/'
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": f"redis://{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}",
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}",
+    }
+}
 
 TEMPLATES = [
     {
@@ -123,7 +123,7 @@ DATABASES = {
         "NAME": os.environ.get("SQL_DATABASE"),
         "USER": os.environ.get("SQL_USER"),
         "PASSWORD": os.environ.get("SQL_PASSWORD"),
-        "HOST": "127.0.0.1",
+        "HOST": os.environ.get("SQL_HOST"),
         "PORT": os.environ.get("SQL_PORT"),
     },
 }
