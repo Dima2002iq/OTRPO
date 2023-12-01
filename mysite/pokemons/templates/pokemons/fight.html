@@ -45,6 +45,10 @@
 
         function writeData(newData) {
             const data = new FormData();
+            data.append('pokemon_player', newData.pokemon_player);
+            data.append('pokemon_pc', newData.pokemon_pc);
+            data.append('pokemon_winner', newData.pokemon_winner);
+            data.append('round', newData.round);
             data.append('event', newData.message);
             data.append('send_type', newData.send_type);
             data.append('email', newData.email);
@@ -65,12 +69,14 @@
         let hp_player = {{ hp_player }};
         let hp_pc = {{ hp_pc }};
         let send_type = 'db';
+        let round = 0;
 
         function onChangeRadioButton() {
             send_type = document.getElementById('radioDB').checked ? 'db' : 'email';
         }
 
         function fightRound() {
+            round++;
             let pc_throw = Math.floor(Math.random() * 10) + 1;
             let player_throw = document.getElementById('input').value;
             if (pc_throw % 2 === player_throw % 2){
@@ -79,6 +85,10 @@
                     alert('Вы победили!');
                     writeData({
                         message: 'player win!',
+                        pokemon_player: {{ pokemon_player_id }},
+                        pokemon_pc: {{ pokemon_pc_id }},
+                        pokemon_winner: {{ pokemon_player_id }},
+                        round: round,
                         send_type: send_type,
                         email: document.getElementById('emailText').value
                     });
@@ -93,6 +103,10 @@
                     alert('Вы проиграли!');
                     writeData({
                         message: 'player lose!',
+                        pokemon_player: {{ pokemon_player_id }},
+                        pokemon_pc: {{ pokemon_pc_id }},
+                        pokemon_winner: {{ pokemon_pc_id }},
+                        round: round,
                         send_type: send_type,
                         email: document.getElementById('emailText').value,
                     });
@@ -104,6 +118,7 @@
         }
         function autoFightRound() {
             while (hp_pc > 0 && hp_player > 0) {
+                round++;
                 let pc_throw = Math.floor(Math.random() * 10) + 1;
                 let player_throw = Math.floor(Math.random() * 10) + 1;
                 if (pc_throw % 2 === player_throw % 2){
@@ -112,6 +127,10 @@
                         alert('Вы победили!');
                         writeData({
                             message: 'player win!',
+                            pokemon_player: {{ pokemon_player_id }},
+                            pokemon_pc: {{ pokemon_pc_id }},
+                            pokemon_winner: {{ pokemon_player_id }},
+                            round: round,
                             send_type: send_type,
                             email: document.getElementById('emailText').value,
                         });
@@ -126,6 +145,10 @@
                         alert('Вы проиграли!');
                         writeData({
                             message: 'player lose!',
+                            pokemon_player: {{ pokemon_player_id }},
+                            pokemon_pc: {{ pokemon_pc_id }},
+                            pokemon_winner: {{ pokemon_pc_id }},
+                            round: round,
                             send_type: send_type,
                             email: document.getElementById('emailText').value,
                         });

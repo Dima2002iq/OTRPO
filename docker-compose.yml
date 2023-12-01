@@ -35,10 +35,25 @@ services:
       - redis-data:/data
     networks:
       - redis-conn
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - db-conn
+    ports:
+      - "3000:3000"
+    volumes:
+      - graphana-data:/var/lib/grafana
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,grafana-worldmap-panel,grafana-piechart-panel"
 
 volumes:
   db-data:
   redis-data:
+  graphana-data:
 
 networks:
   db-conn:

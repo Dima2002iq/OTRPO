@@ -55,9 +55,11 @@ def fight(request, name):
     pokemon_player = get_pokemon_info(name)
     return render(request, "pokemons/fight.html", {
         "pokemon_pc": pokemon_pc,
+        "pokemon_pc_id": pokemon_id,
         "hp_pc": pokemon_pc['stats'][0]['base_stat'],
         "attack_pc": pokemon_pc['stats'][1]['base_stat'],
         "pokemon_player": pokemon_player,
+        "pokemon_player_id": pokemon_player['id'],
         "hp_player": pokemon_player['stats'][0]['base_stat'],
         "attack_player": pokemon_player['stats'][1]['base_stat'],
     })
@@ -67,6 +69,10 @@ def result(request, name):
     if request.POST["send_type"] == 'db':
         event = Event()
         event.description = request.POST["event"]
+        event.pokemon_player = request.POST["pokemon_player"]
+        event.pokemon_pc = request.POST["pokemon_pc"]
+        event.pokemon_winner = request.POST["pokemon_winner"]
+        event.rounds = request.POST["round"]
         event.user_id = request.user.id
         event.save()
         return HttpResponse(f"Event saved: {event.description}")
