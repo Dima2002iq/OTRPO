@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 import os
@@ -24,13 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+ALLOWED_HOSTS = (os.environ.get("ALLOWED_HOSTS") if not os.environ.get("ALLOWED_HOSTS") is None else 'localhost').split(" ")
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY") if not os.environ.get('SECRET_KEY') is None else 'hahahhahahahhahahahhahahaahah'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = (os.environ.get("ALLOWED_HOSTS") if not os.environ.get("ALLOWED_HOSTS") is None else 'localhost').split(" ")
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -126,7 +127,17 @@ DATABASES = {
         "HOST": os.environ.get("SQL_HOST"),
         "PORT": os.environ.get("SQL_PORT"),
     },
+
+    'test': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'file::memory:'
+    },
 }
+
+
+if 'test' in sys.argv:
+    DATABASES['default'] = DATABASES['test']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
