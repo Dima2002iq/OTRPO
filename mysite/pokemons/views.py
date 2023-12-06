@@ -33,7 +33,6 @@ def page(request, num=0):
         "num_next": num + 1,
         "num_prev": num - 1,
     }
-    # test
     return HttpResponse(template.render(context, request))
 
 
