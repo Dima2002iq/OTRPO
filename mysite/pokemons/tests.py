@@ -32,7 +32,9 @@ class ViewsTest(TestCase):
         self.assertTrue(response.context['pokemons'])
 
     def test_result(self):
-        response = self.client.post('/pokemons/pikachu/fight/result', {'send_type': 'db', 'event': 'test event saved!'})
+        response = self.client.post('/pokemons/pikachu/fight/result',
+                                    {'send_type': 'db', 'event': 'test event saved!', 'pokemon_player': '123',
+                                        'pokemon_pc': '456', 'pokemon_winner': '123', 'round': '5'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b'Event saved: test event saved!')
         response = self.client.post('/pokemons/pikachu/fight/result',
