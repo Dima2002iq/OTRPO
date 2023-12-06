@@ -4,7 +4,7 @@ services:
     build: ./mysite
     image: dmitryshusharin/otrpo:latest
     container_name: otrpo-mysite
-    command: gunicorn mysite.wsgi:application --bind 0.0.0.0:8000
+    command: sh -c "python manage.py migrate && gunicorn mysite.wsgi:application --bind 0.0.0.0:8000"
     ports:
       - 8000:8000
     env_file:
